@@ -15,7 +15,21 @@
     </div>
   </div>
 
-  <button class="btn">Add new book</button>
+  <div class="container library grid-container"> 
+    <div class="form">
+      <form action="javascript:;" onsubmit="myFunction(this)"> 
+        <label for="author">Author:</label><br>
+        <input type="text" name="author" value="">
+        <br>
+        <label for="title">Title:</label><br>
+        <input type="text" name="title" value="">
+        <br>
+        <label for="number">Pages:</label><br>
+        <input type="number" name="pages" value="">
+        <br>
+        <input type="button" name="button" value="Click" onClick="addBookToStore(this.form)">
+      </form>
+    </div>
 
   <script src="assets/main.js"></script>
 </body>
