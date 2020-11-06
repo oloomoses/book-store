@@ -32,10 +32,56 @@ function addBook(book){
     <td>${book.author}</td>
     <td>${book.title}</td>
     <td>${book.pages}</td>
-    <td><a href = "" class = "btn btn-danger delete">X</a></td>
+    <td><button class ="btn btn-info read">Unread</btn></td>
+    <td><button class ="btn btn-danger delete">X</btn></td>
   `;
 
   table.appendChild(row);
 }
 
+function removeBook(element) {
+  if(element.classList.contains("delete")) {
+    element.parentElement.parentElement.remove();
+  }
+}
+
+function toggleClasses(){
+  document.getElementById('book-form').classList.toggle('d-none');
+  document.getElementById('hidden').classList.toggle('d-none');
+}
+
 document.addEventListener('DOMContentLoaded', displayBooks());
+
+document.getElementById('book-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const author = e.target.author.value;
+  const title = e.target.title.value;
+  const pages = e.target.pages.value;
+
+  const book = new Book(author, title, pages);
+
+  addBook(book);
+
+  toggleClasses();
+});
+
+document.getElementById('hidden').addEventListener('click', e => {
+  toggleClasses();
+});
+
+document.getElementById('book-list').addEventListener('click', e => {
+  removeBook(e.target);
+});
+
+document.getElementById('book-list').addEventListener('click', e => {
+  element = e.target;
+
+  if(element.classList.contains('read')){
+    if(element.innerHTML === 'Unread'){
+      element.innerHTML = 'Read';
+    } else {
+      element.innerHTML = 'Unread';
+    }
+  }
+
+});
