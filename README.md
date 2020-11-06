@@ -44,8 +44,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This is a Javascript app that allow the user to add and delete a book from the store. The aim of this project is to help learn the fundamentals of javascript 
-create, read, update and DOM manipulation^^
+This is a Javascript app that allows the user to add and delete a book from the store. The aim of this project is to help learn the fundamentals of javascript create, read, update, and DOM manipulation
 
 ### Built With
 Components of this project is listed below;
