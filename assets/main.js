@@ -1,21 +1,13 @@
 class Book {
-  constructor(author, title, pages) {
+  constructor(author, title, pages, read = 'Unread') {
     this.author = author;
     this.title = title;
     this.pages = pages;
+    this.read = read;
   }
 }
 
-function getBooksFromLocal() {
-  let books;
-  if (localStorage.getItem('books') === null) {
-    books = [];
-  } else {
-    books = JSON.parse(localStorage.getItem('books'));
-  }
-
-  return books;
-}
+const getBooksFromLocal = () => JSON.parse(localStorage.getItem('books')) || [];
 
 function addBookToLocal(book) {
   const books = getBooksFromLocal();
@@ -24,27 +16,38 @@ function addBookToLocal(book) {
   localStorage.setItem('books', JSON.stringify(books));
 }
 
-function removeBookFromLocal(title, author, pages) {
+function findBook(title, author, pages) {
   const books = getBooksFromLocal();
+  let i = -1;
 
   books.forEach((b, index) => {
     if (b.title === title && b.author === author && b.pages === pages) {
-      books.splice(index, 1);
+      i = index;
     }
   });
 
+  return i;
+}
+
+function removeBookFromLocal(title, author, pages) {
+  const books = getBooksFromLocal();
+  const index = findBook(title, author, pages);
+  if (index >= 0) { books.splice(index, 1); }
   localStorage.setItem('books', JSON.stringify(books));
 }
 
 function addBook(book) {
   const table = document.querySelector('#book-list');
   const row = document.createElement('tr');
+  const {
+    author, title, pages, read,
+  } = book;
 
   row.innerHTML = `
-    <td>${book.author}</td>
-    <td>${book.title}</td>
-    <td>${book.pages}</td>
-    <td><button class ="btn btn-info read">Unread</btn></td>
+    <td>${author}</td>
+    <td>${title}</td>
+    <td>${pages}</td>
+    <td><button class ="btn btn-info read">${read}</btn></td>
     <td><button class ="btn btn-danger delete">X</btn></td>
   `;
 
@@ -77,8 +80,9 @@ document.getElementById('book-form').addEventListener('submit', e => {
   const author = e.target.author.value;
   const title = e.target.title.value;
   const pages = e.target.pages.value;
+  const read = (e.target.read.checked) ? 'Read' : 'Unread';
 
-  const book = new Book(author, title, pages);
+  const book = new Book(author, title, pages, read);
 
   addBook(book);
   addBookToLocal(book);
@@ -95,7 +99,7 @@ document.getElementById('book-list').addEventListener('click', e => {
   removeBook(element);
 
   if (element.classList.contains('delete')) {
-    const pre = e.target.parentElement.previousElementSibling.previousElementSibling;
+    const pre = e.target.parentElement.previousElementSibling;
     const pages = pre.textContent;
     const title = pre.previousElementSibling.textContent;
     const author = pre.previousElementSibling.previousElementSibling.textContent;
@@ -107,10 +111,24 @@ document.getElementById('book-list').addEventListener('click', e => {
   const element = e.target;
 
   if (element.classList.contains('read')) {
-    if (element.innerHTML === 'Unread') {
-      element.innerHTML = 'Read';
-    } else {
-      element.innerHTML = 'Unread';
+    const pre = e.target.parentElement.previousElementSibling;
+    const pages = pre.textContent;
+    const title = pre.previousElementSibling.textContent;
+    const author = pre.previousElementSibling.previousElementSibling.textContent;
+
+    const books = getBooksFromLocal();
+    const index = findBook(title, author, pages);
+
+    if (index >= 0) {
+      if (element.innerHTML === 'Unread') {
+        element.innerHTML = 'Read';
+        books[index].read = 'Read';
+        localStorage.setItem('books', JSON.stringify(books));
+      } else {
+        element.innerHTML = 'Unread';
+        books[index].read = 'Unread';
+        localStorage.setItem('books', JSON.stringify(books));
+      }
     }
   }
 });
