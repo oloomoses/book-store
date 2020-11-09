@@ -29,10 +29,14 @@ function findBook(title, author, pages) {
   return i;
 }
 
-function removeBookFromLocal(title, author, pages) {
+function removeBookFromLocal(title) {
   const books = getBooksFromLocal();
-  const index = findBook(title, author, pages);
-  if (index >= 0) { books.splice(index, 1); }
+
+  books.forEach((book, index) => {
+    if(book.title === title){
+      books.splice(index, 1);
+    }
+  })
   localStorage.setItem('books', JSON.stringify(books));
 }
 
@@ -126,11 +130,9 @@ document.getElementById('book-list').addEventListener('click', e => {
   removeBook(element);
 
   if (element.classList.contains('delete')) {
-    const pre = e.target.parentElement.previousElementSibling;
-    const pages = pre.textContent;
-    const title = pre.previousElementSibling.textContent;
-    const author = pre.previousElementSibling.previousElementSibling.textContent;
-    removeBookFromLocal(title, author, pages);
+    const pre = element.parentElement.previousElementSibling;
+    const title = pre.previousElementSibling.previousElementSibling.textContent;
+    removeBookFromLocal(title);
   }
 });
 
