@@ -47,8 +47,8 @@ function addBook(book) {
     <td>${author}</td>
     <td>${title}</td>
     <td>${pages}</td>
-    <td><button class ="btn btn-info read">${read}</btn></td>
-    <td><button class ="btn btn-danger delete">X</btn></td>
+    <td><button class ="btn btn-info read">${read}</button></td>
+    <td><button class ="btn btn-danger delete">X</button></td>
   `;
 
   table.appendChild(row);
@@ -60,6 +60,27 @@ function displayBooks() {
   myBookStore.forEach((book) => {
     addBook(book);
   });
+}
+
+function showMsg(msg, className){
+  const div = document.createElement('div');
+  div.className = `alert alert-${className}`;
+  div.appendChild(document.createTextNode(msg));
+
+  const header = document.querySelector('.container');
+  const content = document.querySelector('.content');
+
+  header.insertBefore(div, content);
+
+  setTimeout(() => document.querySelector('.alert').remove(), 1000);
+
+}
+
+function formReset(){
+  document.querySelector('#author').value = '';
+  document.querySelector('#title').value = '';
+  document.querySelector('#pages').value = '';
+  document.querySelector('#read').value = '';
 }
 
 function removeBook(element) {
@@ -82,11 +103,17 @@ document.getElementById('book-form').addEventListener('submit', e => {
   const pages = e.target.pages.value;
   const read = (e.target.read.checked) ? 'Read' : 'Unread';
 
-  const book = new Book(author, title, pages, read);
+  if(author === '' || title === '' || pages === ''){
+    showMsg('Please fill out the required fields', 'danger');
+      
+  }else{
+    const book = new Book(author, title, pages, read);
 
-  addBook(book);
-  addBookToLocal(book);
-  toggleClasses();
+    addBook(book);
+    addBookToLocal(book);
+    formReset();
+    toggleClasses();
+  }
 });
 
 document.getElementById('hidden').addEventListener('click', () => {
