@@ -33,10 +33,10 @@ function removeBookFromLocal(title) {
   const books = getBooksFromLocal();
 
   books.forEach((book, index) => {
-    if(book.title === title){
+    if (book.title === title) {
       books.splice(index, 1);
     }
-  })
+  });
   localStorage.setItem('books', JSON.stringify(books));
 }
 
@@ -66,7 +66,7 @@ function displayBooks() {
   });
 }
 
-function showMsg(msg, className){
+function showMsg(msg, className) {
   const div = document.createElement('div');
   div.className = `alert alert-${className}`;
   div.appendChild(document.createTextNode(msg));
@@ -77,10 +77,9 @@ function showMsg(msg, className){
   header.insertBefore(div, content);
 
   setTimeout(() => document.querySelector('.alert').remove(), 1000);
-
 }
 
-function formReset(){
+function formReset() {
   document.querySelector('#author').value = '';
   document.querySelector('#title').value = '';
   document.querySelector('#pages').value = '';
@@ -107,10 +106,9 @@ document.getElementById('book-form').addEventListener('submit', e => {
   const pages = e.target.pages.value;
   const read = (e.target.read.checked) ? 'Read' : 'Unread';
 
-  if(author === '' || title === '' || pages === ''){
+  if (author === '' || title === '' || pages === '') {
     showMsg('Please fill out the required fields', 'danger');
-      
-  }else{
+  } else {
     const book = new Book(author, title, pages, read);
 
     addBook(book);
