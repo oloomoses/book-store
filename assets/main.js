@@ -1,44 +1,45 @@
-class Book {
-  constructor(author, title, pages, read = 'Unread') {
-    this.author = author;
-    this.title = title;
-    this.pages = pages;
-    this.read = read;
+const book = (author, title, pages, read = 'Unread') => {
+  return { author, title, pages, read }
+}
+
+const BookStorage = () => {
+  const getBooksFromLocal = () => JSON.parse(localStorage.getItem('books')) || [];
+
+  const addBookToLocal = (book) => {
+    const books = getBooksFromLocal();
+    books.push(book);
+  
+    localStorage.setItem('books', JSON.stringify(books));
   }
+
+  const findBook = (title) => {
+    const books = getBooksFromLocal();
+    let i = -1;
+  
+    books.forEach((b, index) => {
+      if (b.title === title) {
+        i = index;
+      }
+    });
+  
+    return i;
+  }
+
+  const removeBookFromLocal = (title) => {
+    const books = getBooksFromLocal();
+  
+    books.forEach((book, index) => {
+      if (book.title === title) {
+        books.splice(index, 1);
+      }
+    });
+    localStorage.setItem('books', JSON.stringify(books));
+  }
+
+  return { addBookToLocal, getBooksFromLocal, removeBookFromLocal, findBook }  
 }
 
-const getBooksFromLocal = () => JSON.parse(localStorage.getItem('books')) || [];
 
-function addBookToLocal(book) {
-  const books = getBooksFromLocal();
-  books.push(book);
-
-  localStorage.setItem('books', JSON.stringify(books));
-}
-
-function findBook(title, author, pages) {
-  const books = getBooksFromLocal();
-  let i = -1;
-
-  books.forEach((b, index) => {
-    if (b.title === title && b.author === author && b.pages === pages) {
-      i = index;
-    }
-  });
-
-  return i;
-}
-
-function removeBookFromLocal(title) {
-  const books = getBooksFromLocal();
-
-  books.forEach((book, index) => {
-    if (book.title === title) {
-      books.splice(index, 1);
-    }
-  });
-  localStorage.setItem('books', JSON.stringify(books));
-}
 
 function addBook(book) {
   const table = document.querySelector('#book-list');
@@ -59,7 +60,7 @@ function addBook(book) {
 }
 
 function displayBooks() {
-  const myBookStore = getBooksFromLocal();
+  const myBookStore = BookStorage().getBooksFromLocal();
 
   myBookStore.forEach((book) => {
     addBook(book);
@@ -109,10 +110,10 @@ document.getElementById('book-form').addEventListener('submit', e => {
   if (author === '' || title === '' || pages === '') {
     showMsg('Please fill out the required fields', 'danger');
   } else {
-    const book = new Book(author, title, pages, read);
+    const book1 = book(author, title, pages, read);
 
-    addBook(book);
-    addBookToLocal(book);
+    addBook(book1);
+    BookStorage().addBookToLocal(book1);
     formReset();
     toggleClasses();
   }
@@ -130,7 +131,7 @@ document.getElementById('book-list').addEventListener('click', e => {
   if (element.classList.contains('delete')) {
     const pre = element.parentElement.previousElementSibling;
     const title = pre.previousElementSibling.previousElementSibling.textContent;
-    removeBookFromLocal(title);
+    BookStorage().removeBookFromLocal(title);
   }
 });
 
@@ -143,8 +144,8 @@ document.getElementById('book-list').addEventListener('click', e => {
     const title = pre.previousElementSibling.textContent;
     const author = pre.previousElementSibling.previousElementSibling.textContent;
 
-    const books = getBooksFromLocal();
-    const index = findBook(title, author, pages);
+    const books = BookStorage().getBooksFromLocal();
+    const index = BookStorage().findBook(title);
 
     if (index >= 0) {
       if (element.innerHTML === 'Unread') {
