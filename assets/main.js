@@ -1,6 +1,6 @@
-const book = (author, title, pages, read = 'Unread') => {
-  return { author, title, pages, read }
-}
+const book = (author, title, pages, read = 'Unread') => ({
+  author, title, pages, read,
+});
 
 const BookStorage = () => {
   const getBooksFromLocal = () => JSON.parse(localStorage.getItem('books')) || [];
@@ -8,37 +8,38 @@ const BookStorage = () => {
   const addBookToLocal = (book) => {
     const books = getBooksFromLocal();
     books.push(book);
-  
+
     localStorage.setItem('books', JSON.stringify(books));
-  }
+  };
 
   const findBook = (title) => {
     const books = getBooksFromLocal();
     let i = -1;
-  
+
     books.forEach((b, index) => {
       if (b.title === title) {
         i = index;
       }
     });
-  
+
     return i;
-  }
+  };
 
   const removeBookFromLocal = (title) => {
     const books = getBooksFromLocal();
-  
+
     books.forEach((book, index) => {
       if (book.title === title) {
         books.splice(index, 1);
       }
     });
     localStorage.setItem('books', JSON.stringify(books));
-  }
+  };
 
-  return { addBookToLocal, getBooksFromLocal, removeBookFromLocal, findBook }  
-}
-
+  return {
+    addBookToLocal, getBooksFromLocal, removeBookFromLocal, findBook,
+  };
+};
 
 
 function addBook(book) {
@@ -140,9 +141,7 @@ document.getElementById('book-list').addEventListener('click', e => {
 
   if (element.classList.contains('read')) {
     const pre = e.target.parentElement.previousElementSibling;
-    const pages = pre.textContent;
     const title = pre.previousElementSibling.textContent;
-    const author = pre.previousElementSibling.previousElementSibling.textContent;
 
     const books = BookStorage().getBooksFromLocal();
     const index = BookStorage().findBook(title);
